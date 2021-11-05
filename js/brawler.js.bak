@@ -1,0 +1,65 @@
+window.onload = function() {
+
+    var map = [
+         5,  5,  5,  5,  5,  5,  5,  5,  5,  6, 10,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5,  5,  5,  5,  5,  6, 18,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5,  5,  5,  5,  5,  6, 26,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5,  5,  5,  5,  5,  6, 12,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5, 13, 14,  5,  5,  6, 20,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5, 21, 22,  5,  5,  6, 28,  2,  2,  5,  5,  5,
+         5,  5,  5,  5,  5,  5,  5,  5,  5,  6, 29,  0,  1,  5,  5,  5,
+        37, 38, 37, 38, 37, 38, 37, 38, 37, 38, 37, 38, 37, 38, 37, 38,
+        46, 43, 46, 43, 46, 43, 46, 43, 46, 43, 46, 43, 46, 43, 46, 43,
+        52, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51,
+        53, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51, 52, 51
+    ];
+
+    map.w = 16;
+    map.h = 7;
+
+    var ss = new SpriteSheet("img/street_tiles.2.png", 8, 7);
+    var tc = new Sprite("img/trash.png");
+
+    var htmlCanvas = document.getElementById('c'), context = htmlCanvas.getContext('2d');
+    initialize();
+
+    function initialize() {
+        window.addEventListener('resize', resizeCanvas, false);
+        resizeCanvas();
+    }
+
+    function render() {
+        if (ss.ready) {
+            for (var i = 0; i < map.length; i++) {
+                context.drawImage(
+                    ss.f[map[i]],
+                    i % map.w * 48,
+                    Math.floor(i / map.w) * 48);
+            }
+        }
+
+        // items layer
+        if (tc.ready) {
+            context.drawImage(
+                tc.f, 360, 260);
+        }
+    }
+
+    function resizeCanvas() {
+        htmlCanvas.width = window.innerWidth;
+        htmlCanvas.height = window.innerHeight;
+        render();
+    }
+
+    var start;
+    function step(timestamp) {
+        if (!start) start = timestamp;
+        var progress = timestamp - start;
+        render();
+        if (progress < 2000) {
+            window.requestAnimationFrame(step);
+        }
+    }
+
+    window.requestAnimationFrame(step);
+};
